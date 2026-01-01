@@ -116,6 +116,28 @@
         right: auto;
     }
 
+    /* Adjust dropdown when sidebar is open on desktop */
+    @media (min-width: 1025px) {
+        [dir="ltr"] #accountWrapper {
+            left: 302px !important;
+        }
+
+        [dir="rtl"] #accountWrapper {
+            right: 302px !important;
+        }
+    }
+
+    /* On mobile, use default positioning */
+    @media (max-width: 1024px) {
+        [dir="ltr"] body.sidebar-open #accountWrapper {
+            left: 12px !important;
+        }
+
+        [dir="rtl"] body.sidebar-open #accountWrapper {
+            right: 12px !important;
+        }
+    }
+
     #accountWrapper.show {
         opacity: 1;
         visibility: visible;
@@ -337,6 +359,175 @@
         .header-account, .header-lang { transform: translateY(4px); }
     }
 
+    /* Sidebar for Operations */
+    #operationsSidebar {
+        position: fixed;
+        top: 0;
+        width: 280px;
+        height: 100vh;
+        background: rgba(26,26,26,0.98);
+        border-right: 1px solid rgba(212,175,53,0.3);
+        backdrop-filter: blur(20px);
+        z-index: 9999;
+        overflow-y: auto;
+        padding-top: 80px;
+        transform: translateX(0);
+        transition: transform 0.3s ease;
+        box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    }
+
+    [dir="rtl"] #operationsSidebar {
+        right: 0;
+        border-right: none;
+        border-left: 1px solid rgba(212,175,53,0.3);
+    }
+
+    [dir="ltr"] #operationsSidebar {
+        left: 0;
+    }
+
+    [dir="ltr"] #operationsSidebar.hide {
+        transform: translateX(-100%);
+    }
+
+    [dir="rtl"] #operationsSidebar.hide {
+        transform: translateX(100%);
+    }
+
+    #operationsSidebar nav {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        padding: 12px;
+    }
+
+    #operationsSidebar a {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        border-radius: 8px;
+        color: #E6EDF3;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        font-size: 0.95rem;
+    }
+
+    #operationsSidebar a:hover,
+    #operationsSidebar a:focus-visible {
+        background: rgba(212,175,53,0.15);
+        color: #d4af35;
+        transform: translateX(4px);
+        outline: none;
+    }
+
+    #operationsSidebar a .material-symbols-outlined {
+        font-size: 20px;
+    }
+
+    #operationsSidebar a.text-red-400:hover {
+        background: rgba(255,107,107,0.15);
+        color: #ff6b6b;
+    }
+
+    #sidebarToggle {
+        position: fixed;
+        top: 20px;
+        width: 44px;
+        height: 44px;
+        background: rgba(212,175,53,0.2);
+        border: 1px solid rgba(212,175,53,0.4);
+        border-radius: 8px;
+        cursor: pointer;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        color: #d4af35;
+        transition: all 0.2s ease;
+        z-index: 9998;
+    }
+
+    [dir="rtl"] #sidebarToggle {
+        right: 12px;
+    }
+
+    [dir="ltr"] #sidebarToggle {
+        left: 12px;
+    }
+
+    #sidebarToggle:hover {
+        background: rgba(212,175,53,0.3);
+        transform: scale(1.05);
+    }
+
+    #sidebarOverlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.45);
+        backdrop-filter: blur(2px);
+        z-index: 9997;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.25s ease, visibility 0.25s ease;
+        pointer-events: auto;
+        display: none;
+    }
+
+    #sidebarOverlay.show {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* Desktop: Sidebar always visible, adjust main content */
+    @media (min-width: 1025px) {
+        #operationsSidebar {
+            position: static;
+            position: fixed;
+            width: 280px;
+        }
+
+        [dir="ltr"] main#mainContent {
+            margin-left: 280px;
+        }
+
+        [dir="rtl"] main#mainContent {
+            margin-right: 280px;
+        }
+
+        [dir="ltr"] header {
+            margin-left: 280px;
+        }
+
+        [dir="rtl"] header {
+            margin-right: 280px;
+        }
+    }
+
+    /* Mobile/Tablet: Sidebar as drawer, toggle button visible */
+    @media (max-width: 1024px) {
+        #sidebarToggle {
+            display: flex;
+        }
+
+        #sidebarOverlay {
+            display: block;
+        }
+
+        #operationsSidebar {
+            width: 100%;
+            max-width: 280px;
+            position: fixed;
+        }
+
+        [dir="ltr"] #operationsSidebar.hide {
+            transform: translateX(-100%);
+        }
+
+        [dir="rtl"] #operationsSidebar.hide {
+            transform: translateX(100%);
+        }
+    }
+
     /* Modal: Add Shop */
     .modal {
         position: fixed;
@@ -409,6 +600,60 @@
 <canvas id="bgCanvas"></canvas>
 <div class="min-h-screen flex flex-col relative z-10">
     <div id="menuOverlay"></div>
+    <div id="sidebarOverlay"></div>
+    
+    <!-- Sidebar Toggle Button -->
+    <button id="sidebarToggle" type="button" aria-label="Toggle Sidebar" title="Toggle Sidebar">
+        <span class="material-symbols-outlined">menu</span>
+    </button>
+
+    <!-- Operations Sidebar -->
+    <div id="operationsSidebar" class="aurvex-card">
+        <nav>
+            <a href="ai-chat.html" class="flex items-center gap-3 px-4 py-3 rounded-lg">
+                <span class="material-symbols-outlined">chat</span>
+                <span class="menu-ai-chat">الدردشة الذكية</span>
+            </a>
+            <a href="reports.html" class="flex items-center gap-3 px-4 py-3 rounded-lg">
+                <span class="material-symbols-outlined">analytics</span>
+                <span class="menu-reports">رسائل من المشتركين</span>
+            </a>
+            <hr class="border-primary/20 my-2" />
+            <a href="#" id="sidebarAddShop" class="flex items-center gap-3 px-4 py-3 rounded-lg">
+                <span class="material-symbols-outlined">add_business</span>
+                <span class="menu-add-shop">إضافة Shop</span>
+            </a>
+            <a href="#" id="sidebarAddAdmin" class="flex items-center gap-3 px-4 py-3 rounded-lg">
+                <span class="material-symbols-outlined">person_add</span>
+                <span class="menu-add-admin">إنشاء حساب Admin</span>
+            </a>
+            <a href="#" id="sidebarAddEmployee" class="flex items-center gap-3 px-4 py-3 rounded-lg">
+                <span class="material-symbols-outlined">person_add</span>
+                <span class="menu-add-employee">إنشاء حساب Employee</span>
+            </a>
+            <a href="#" id="sidebarEditShop" class="flex items-center gap-3 px-4 py-3 rounded-lg">
+                <span class="material-symbols-outlined">edit_note</span>
+                <span class="menu-edit-shop">تعديل بيانات أي محل</span>
+            </a>
+            <a href="#" id="sidebarToggleSub" class="flex items-center gap-3 px-4 py-3 rounded-lg">
+                <span class="material-symbols-outlined toggle-icon">toggle_on</span>
+                <span class="menu-toggle-sub">تفعيل اشتراك Shop</span>
+            </a>
+            <hr class="border-primary/20 my-2" />
+            <a href="#" id="sidebarDeleteAdmin" class="flex items-center gap-3 px-4 py-3 rounded-lg text-red-400">
+                <span class="material-symbols-outlined">delete</span>
+                <span class="menu-delete-admin">حذف ادمن</span>
+            </a>
+            <a href="#" id="sidebarDeleteShop" class="flex items-center gap-3 px-4 py-3 rounded-lg text-red-400">
+                <span class="material-symbols-outlined">delete_forever</span>
+                <span class="menu-delete-shop">حذف Shop</span>
+            </a>
+            <a href="#" id="sidebarDeleteEmployee" class="flex items-center gap-3 px-4 py-3 rounded-lg text-red-400">
+                <span class="material-symbols-outlined">person_remove</span>
+                <span class="menu-delete-employee">حذف عامل</span>
+            </a>
+        </nav>
+    </div>
 <!-- ================= HEADER ================= -->
 <header class="px-6 py-4 border-b border-primary/30 bg-white/5 backdrop-blur">
     <!-- Account Button -->
@@ -431,52 +676,6 @@
                     <span class="menu-profile">الملف الشخصي</span>
                 </a>
             </div>
-            <nav class="p-4 flex flex-col gap-2" style="background: rgba(26,26,26,0.95);">
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary/20 text-primary font-medium">
-                    <span class="material-symbols-outlined">dashboard</span>
-                    <span class="menu-dashboard">الداشبورد الرئيسي</span>
-                </a>
-                <a href="ai-chat.html" id="menuAIChat" class="flex items-center gap-3 px-4 py-3 rounded-lg">
-                    <span class="material-symbols-outlined">chat</span>
-                    <span class="menu-ai-chat">الدردشة الذكية</span>
-                </a>
-                <a href="reports.html" id="menuReports" class="flex items-center gap-3 px-4 py-3 rounded-lg">
-                    <span class="material-symbols-outlined">analytics</span>
-                    <span class="menu-reports">رسائل من المشتركين</span>
-                </a>
-                <a href="add-shop.html" id="menuAddShop" class="flex items-center gap-3 px-4 py-3 rounded-lg">
-                    <span class="material-symbols-outlined">add_business</span>
-                    <span class="menu-add-shop">إضافة Shop</span>
-                </a>
-                <a href="add-admin.html" id="menuAddAdmin" class="flex items-center gap-3 px-4 py-3 rounded-lg">
-                    <span class="material-symbols-outlined">person_add</span>
-                    <span class="menu-add-admin">إنشاء حساب Admin</span>
-                </a>
-                <a href="add-employee.html" id="menuAddEmployee" class="flex items-center gap-3 px-4 py-3 rounded-lg">
-                    <span class="material-symbols-outlined">person_add</span>
-                    <span class="menu-add-employee">إنشاء حساب Employee</span>
-                </a>
-                <a href="edit-shop.html" id="menuEditShop" class="flex items-center gap-3 px-4 py-3 rounded-lg">
-                    <span class="material-symbols-outlined">edit_note</span>
-                    <span class="menu-edit-shop">تعديل بيانات أي محل</span>
-                </a>
-                <a href="#" id="menuToggleSub" class="flex items-center gap-3 px-4 py-3 rounded-lg">
-                    <span class="material-symbols-outlined toggle-icon">toggle_on</span>
-                    <span class="menu-toggle-sub">تفعيل اشتراك Shop</span>
-                </a>
-                <a href="#" id="menuDeleteAdmin" class="flex items-center gap-3 px-4 py-3 rounded-lg text-red-400">
-                    <span class="material-symbols-outlined">delete</span>
-                    <span class="menu-delete-admin">حذف ادمن</span>
-                </a>
-                <a href="#" id="menuDeleteShop" class="flex items-center gap-3 px-4 py-3 rounded-lg text-red-400">
-                    <span class="material-symbols-outlined">delete_forever</span>
-                    <span class="menu-delete-shop">حذف Shop</span>
-                </a>
-                <a href="#" id="menuDeleteEmployee" class="flex items-center gap-3 px-4 py-3 rounded-lg text-red-400">
-                    <span class="material-symbols-outlined">person_remove</span>
-                    <span class="menu-delete-employee">حذف عامل</span>
-                </a>
-            </nav>
             <div class="py-3 border-t border-primary/20">
                 <a href="#" class="flex items-center gap-3 px-5 py-2 hover:bg-white/10 transition text-red-400 account-logout-bottom">
                     <span class="material-symbols-outlined">logout</span>
@@ -698,6 +897,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const accountWrapper = document.getElementById("accountWrapper");
     const accountArrow = document.getElementById("accountArrow");
     const menuOverlay = document.getElementById("menuOverlay");
+    
+    // Sidebar
+    const sidebarToggle = document.getElementById("sidebarToggle");
+    const operationsSidebar = document.getElementById("operationsSidebar");
+    const sidebarOverlay = document.getElementById("sidebarOverlay");
+
+    // Move overlay and sidebar to document.body to avoid stacking-context issues
+    if (sidebarOverlay && sidebarOverlay.parentElement !== document.body) {
+        document.body.appendChild(sidebarOverlay);
+    }
+    if (operationsSidebar && operationsSidebar.parentElement !== document.body) {
+        document.body.appendChild(operationsSidebar);
+    }
 
     // Move overlay and dropdown to document.body to avoid stacking-context issues
     if (menuOverlay && menuOverlay.parentElement !== document.body) {
@@ -710,6 +922,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Ensure zIndex is explicit (fallback)
     accountWrapper.style.zIndex = '10005';
     menuOverlay.style.zIndex = '10000';
+    operationsSidebar.style.zIndex = '9999';
+    sidebarOverlay.style.zIndex = '9997';
 
     // Make dropdown scrollable on mobile and set touch behaviors
     accountWrapper.style.overflowY = 'auto';
@@ -729,6 +943,37 @@ document.addEventListener("DOMContentLoaded", () => {
             e.preventDefault();
         }
     }, { passive: false });
+
+    // Sidebar Toggle Handler
+    sidebarToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        // Close account dropdown if open
+        accountWrapper.classList.remove('show');
+        accountArrow.classList.remove('rotate-180');
+        menuOverlay.classList.remove('show');
+        
+        const isHidden = operationsSidebar.classList.toggle('hide');
+        sidebarOverlay.classList.toggle('show', isHidden);
+        document.body.classList.toggle('sidebar-open', !isHidden);
+        document.body.style.overflow = isHidden ? '' : 'hidden';
+    });
+
+    sidebarOverlay.addEventListener('click', () => {
+        operationsSidebar.classList.add('hide');
+        sidebarOverlay.classList.remove('show');
+        document.body.classList.remove('sidebar-open');
+        document.body.style.overflow = '';
+    });
+
+    operationsSidebar.addEventListener('click', (e) => {
+        // Only close sidebar when a link is clicked on mobile
+        if (window.innerWidth <= 1024 && e.target.closest('a')) {
+            operationsSidebar.classList.add('hide');
+            sidebarOverlay.classList.remove('show');
+            document.body.classList.remove('sidebar-open');
+            document.body.style.overflow = '';
+        }
+    });
 
     accountBtn.addEventListener("click", e => {
         e.stopPropagation();
@@ -771,6 +1016,12 @@ document.addEventListener("DOMContentLoaded", () => {
         accountWrapper.classList.remove("show");
         accountArrow.classList.remove("rotate-180");
         menuOverlay.classList.remove("show");
+        // Only hide sidebar on mobile, not on desktop
+        if (window.innerWidth <= 1024) {
+            operationsSidebar.classList.add("hide");
+            sidebarOverlay.classList.remove("show");
+            document.body.classList.remove('sidebar-open');
+        }
         document.body.style.overflow = '';
         resizeCanvas();
     });
@@ -1028,15 +1279,27 @@ document.addEventListener("DOMContentLoaded", () => {
             document.querySelector('.header-account').style.left = 'auto';
             document.querySelector('.header-lang').style.left = '12px';
             document.querySelector('.header-lang').style.right = 'auto';
-            accountWrapper.style.right = '12px';
-            accountWrapper.style.left = 'auto';
+            // Keep dropdown positioning aware of sidebar
+            if (document.body.classList.contains('sidebar-open') && window.innerWidth > 1024) {
+                accountWrapper.style.right = '302px';
+                accountWrapper.style.left = 'auto';
+            } else {
+                accountWrapper.style.right = '12px';
+                accountWrapper.style.left = 'auto';
+            }
         } else {
             document.querySelector('.header-account').style.left = '12px';
             document.querySelector('.header-account').style.right = 'auto';
             document.querySelector('.header-lang').style.right = '12px';
             document.querySelector('.header-lang').style.left = 'auto';
-            accountWrapper.style.left = '12px';
-            accountWrapper.style.right = 'auto';
+            // Keep dropdown positioning aware of sidebar
+            if (document.body.classList.contains('sidebar-open') && window.innerWidth > 1024) {
+                accountWrapper.style.left = '302px';
+                accountWrapper.style.right = 'auto';
+            } else {
+                accountWrapper.style.left = '12px';
+                accountWrapper.style.right = 'auto';
+            }
         }
 
         // close any open menu/overlay
@@ -1051,17 +1314,28 @@ document.addEventListener("DOMContentLoaded", () => {
     // Subscription toggle & admin actions handlers
     function renderSubscriptionLabel() {
         const el = document.getElementById('menuToggleSub');
-        if (!el) return;
-        const icon = el.querySelector('.material-symbols-outlined.toggle-icon');
-        const label = el.querySelector('.menu-toggle-sub');
+        const sidebarEl = document.getElementById('sidebarToggleSub');
+        if (!el && !sidebarEl) return;
+        const icon = el ? el.querySelector('.material-symbols-outlined.toggle-icon') : null;
+        const sidebarIcon = sidebarEl ? sidebarEl.querySelector('.material-symbols-outlined.toggle-icon') : null;
+        const label = el ? el.querySelector('.menu-toggle-sub') : null;
+        const sidebarLabel = sidebarEl ? sidebarEl.querySelector('.menu-toggle-sub') : null;
         const lang = document.documentElement.getAttribute('lang') === 'ar' ? 'ar' : 'en';
         const t = translations[lang].menu;
         if (icon) icon.innerText = shopSubscriptionActive ? 'toggle_on' : 'toggle_off';
+        if (sidebarIcon) sidebarIcon.innerText = shopSubscriptionActive ? 'toggle_on' : 'toggle_off';
         if (label) label.innerText = shopSubscriptionActive ? t.deactivate : t.activate;
+        if (sidebarLabel) sidebarLabel.innerText = shopSubscriptionActive ? t.deactivate : t.activate;
         // set href so the user is taken to a management page for the chosen action
         const action = shopSubscriptionActive ? 'deactivate' : 'activate';
-        el.setAttribute('href', `manage-subscription.html?action=${action}`);
-        el.setAttribute('aria-label', label ? label.innerText : action);
+        if (el) {
+            el.setAttribute('href', `manage-subscription.html?action=${action}`);
+            el.setAttribute('aria-label', label ? label.innerText : action);
+        }
+        if (sidebarEl) {
+            sidebarEl.setAttribute('href', `manage-subscription.html?action=${action}`);
+            sidebarEl.setAttribute('aria-label', sidebarLabel ? sidebarLabel.innerText : action);
+        }
     }
 
     function toggleSubscriptionAction() {
@@ -1419,6 +1693,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const menuAddEmployeeBtn = document.getElementById('menuAddEmployee');
     if (menuAddEmployeeBtn) menuAddEmployeeBtn.addEventListener('click', e=>{ if (e.shiftKey||e.ctrlKey||e.metaKey) return; e.preventDefault(); showAddEmployeeModal(); });
 
+    // wire sidebar menu buttons
+    const sidebarAddAdminBtn = document.getElementById('sidebarAddAdmin');
+    if (sidebarAddAdminBtn) sidebarAddAdminBtn.addEventListener('click', e=>{ if (e.shiftKey||e.ctrlKey||e.metaKey) return; e.preventDefault(); showAddAdminModal(); });
+    const sidebarAddEmployeeBtn = document.getElementById('sidebarAddEmployee');
+    if (sidebarAddEmployeeBtn) sidebarAddEmployeeBtn.addEventListener('click', e=>{ if (e.shiftKey||e.ctrlKey||e.metaKey) return; e.preventDefault(); showAddEmployeeModal(); });
+
     // No server integration: shops are managed locally in the page
     const refreshBtn = document.getElementById('refreshShopsBtn');
     if (refreshBtn) refreshBtn.addEventListener('click', (e) => { e.preventDefault(); /* no-op: list is local */ });
@@ -1454,6 +1734,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const menuDeleteShopBtn = document.getElementById('menuDeleteShop');
     if (menuDeleteShopBtn) menuDeleteShopBtn.addEventListener('click', e => { e.preventDefault(); deleteShop(); });
 
+    // wire up sidebar buttons
+    const sidebarToggleSubBtn = document.getElementById('sidebarToggleSub');
+    if (sidebarToggleSubBtn) {
+        sidebarToggleSubBtn.setAttribute('href', `manage-subscription.html?action=${shopSubscriptionActive ? 'deactivate' : 'activate'}`);
+    }
+    const sidebarAddShopBtn = document.getElementById('sidebarAddShop');
+    if (sidebarAddShopBtn) {
+        sidebarAddShopBtn.addEventListener('click', e => {
+            if (e.shiftKey || e.ctrlKey || e.metaKey) return;
+            e.preventDefault(); showAddShopModal();
+        });
+    }
+    const sidebarEditShopBtn = document.getElementById('sidebarEditShop');
+    if (sidebarEditShopBtn) sidebarEditShopBtn.setAttribute('href', 'edit-shop.html');
+    const sidebarDeleteAdminBtn = document.getElementById('sidebarDeleteAdmin');
+    if (sidebarDeleteAdminBtn) sidebarDeleteAdminBtn.addEventListener('click', e => { e.preventDefault(); deleteAdmin(); });
+    const sidebarDeleteEmployeeBtn = document.getElementById('sidebarDeleteEmployee');
+    if (sidebarDeleteEmployeeBtn) sidebarDeleteEmployeeBtn.addEventListener('click', e => { e.preventDefault(); deleteEmployee(); });
+    const sidebarDeleteShopBtn = document.getElementById('sidebarDeleteShop');
+    if (sidebarDeleteShopBtn) sidebarDeleteShopBtn.addEventListener('click', e => { e.preventDefault(); deleteShop(); });
+
     // Touch feedback: add a temporary pressed class on touchstart for immediate visual response
     ['touchstart','touchend','touchcancel'].forEach(evt => {
         accountWrapper.addEventListener(evt, (e) => {
@@ -1486,6 +1787,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ensure subscription label is correct on load
     renderSubscriptionLabel();
+    
+    // Initialize sidebar state based on screen size
+    function initializeSidebarState() {
+        if (window.innerWidth <= 1024) {
+            // Mobile: hide sidebar by default
+            operationsSidebar.classList.add('hide');
+            document.body.classList.remove('sidebar-open');
+        } else {
+            // Desktop: show sidebar by default
+            operationsSidebar.classList.remove('hide');
+            document.body.classList.add('sidebar-open');
+        }
+    }
+    
+    initializeSidebarState();
+    
+    // Re-initialize sidebar state on window resize
+    window.addEventListener('resize', initializeSidebarState);
 });
 </script>
 
